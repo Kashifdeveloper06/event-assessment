@@ -16,9 +16,9 @@ This documentation serves as a guide for backend Express.js developers Assessmen
 ### Technologies Used
 The backend of the project is built using the following technologies:
 
-**Node.js** : JavaScript runtime environment
-**Express.js**: Web application framework for Node.js
-**MongoDB**: NoSQL database for storing events
+**Node.js** : JavaScript runtime environment <br>
+**Express.js**: Web application framework for Node.js <br>
+**MongoDB**: NoSQL database for storing events <br>
 
 ### Project Structure
 The project follows a common structure for an Express.js application. Here is an overview of the important files and directories:<br>
@@ -40,11 +40,11 @@ Create a .env file based on the provided .env.example file and configure the env
 
 Run the following command to install the required dependencies.
 
->> npm install
+> npm install
 
 Run this command to start the backend.
 
->>npm run dev
+>npm run dev
 
 Now start the given **index.html** file and trigger the event to get Actions.
 
