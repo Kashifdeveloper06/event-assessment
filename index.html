@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eventing Library Demo</title>
+  </head>
+  <body>
+    <h1>Click the button</h1>
+    <button id="myButton">Me!</button>
+    <button id="downloadButton">Download Data</button>
+    <script>
+      const eventing = {
+        Events: class Events {
+          constructor() {
+            this.eventHandlers = {};
+          }
+
+          on(eventName, callback) {
+            if (!this.eventHandlers[eventName]) {
+              this.eventHandlers[eventName] = [];
+            }
+            this.eventHandlers[eventName].push(callback);
+          }
+
+          trigger(eventName) {
+            const handlers = this.eventHandlers[eventName];
+            if (handlers) {
+              handlers.forEach((callback) => callback());
+            }
+          }
+
+          off(eventName) {
+            delete this.eventHandlers[eventName];
+          }
+        },
+      };
+
+      const { Events } = eventing;
+      const eventsInstance = new Events();
+
+      // Attach event handlers
+
+      async function PostClick() {
+        let response = await fetch("http://localhost:8080/event/add", {
+          method: "POST",
+          body: JSON.stringify({
+            event: "click",
+          }),
+        });
+        let data = await response.json();
+        console.log(data);
+      }
+
+      eventsInstance.on("buttonClick", () => {
+        console.log("Hello11111");
+        PostClick();
+      });
+      eventsInstance.on("buttonClick", () => {
+        console.log("There!");
+      });
+
+      // Get the button element
+      const button = document.getElementById("myButton");
+
+      // Add a click event listener using the custom eventing library
+      button.addEventListener("click", () => {
+        eventsInstance.trigger("buttonClick");
+      });
+
+      document
+        .getElementById("downloadButton")
+        .addEventListener("click", async () => {
+          // Sample data
+          let response = await fetch("http://localhost:8080/event/list", {
+            method: "GET",
+          });
+          let jsonData = await response.json();
+
+          // Convert data to JSON string
+          const jsonStr = JSON.stringify(jsonData, null, 2); // Add formatting for readability
+
+          // Create a Blob from the JSON string
+          const blob = new Blob([jsonStr], { type: "application/json" });
+
+          // Create a URL for the Blob
+          const blobUrl = URL.createObjectURL(blob);
+
+          // Create a temporary link element
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = "app.log"; // File name
+
+          // Append the link to the body and click it to trigger download
+          document.body.appendChild(link);
+          link.click();
+
+          // Clean up by revoking the Blob URL
+          URL.revokeObjectURL(blobUrl);
+
+          // Remove the link from the body
+          document.body.removeChild(link);
+        });
+    </script>
+  </body>
+</html>
